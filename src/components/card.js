@@ -5,11 +5,8 @@ export function createCard(item, deleteCard, likeCard, openImage) {
     const cardTitle = cardElement.querySelector('.card__title');
     const deleteButton = cardElement.querySelector('.card__delete-button');
     const likeButton = cardElement.querySelector('.card__like-button');
-    const popupImage = document.querySelector('.popup_type_image');
-    const imagePopup = document.querySelector('.popup__image');
-    const captionPopup = document.querySelector('.popup__caption');
 
-    captionPopup.textContent = item.name;
+    // captionPopup.textContent = item.name;
     cardImage.src = item.link;
     cardImage.alt = item.name;
     cardTitle.textContent = item.name;
@@ -23,9 +20,7 @@ export function createCard(item, deleteCard, likeCard, openImage) {
     });
 
     cardImage.addEventListener('click', () => {
-        openImage(popupImage);
-        imagePopup.src = item.link;
-        imagePopup.alt = item.name;
+        openImage(item);
     });
 
     return cardElement;
@@ -38,7 +33,3 @@ export function deleteCard(card) {
 export function likeCard(element) {
     element.classList.toggle('card__like-button_is-active');
 };
-
-export function openImage(image) {
-    image.classList.add('popup_is-opened');
-}
