@@ -59,7 +59,6 @@ Promise.all([getUserInfo(), getCards()])
     profileImage.style.backgroundImage = `url(${userInfo.avatar})`;
     profileName.textContent = userInfo.name;
     profileDescription.textContent = userInfo.about;
-    console.log([userInfo, cards]);
     renderCards(cards, deleteCard, currentId, deleteCardApi);
     setupEventLisneners();
   })
