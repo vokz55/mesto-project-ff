@@ -15,4 +15,4 @@ function handleKeydown(event) {
             closeModal(openPopupElement);
         }
     }
-}
+};
