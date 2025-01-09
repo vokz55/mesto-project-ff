@@ -1,6 +1,6 @@
 // Импорты:
 import './pages/index.css';
-import { createCard, deleteCard, likeCard } from './components/card.js';
+import { createCard, deleteCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 import {
@@ -89,8 +89,6 @@ function setupEventLisneners() {
       clearValidation(validationConfig, newCardForm);
   });
 
-
-
   profileImageForm.addEventListener('submit', submitProfileImageForm);
   newCardForm.addEventListener('submit', submitNewCardForm);
   profileFormEdit.addEventListener('submit', editProfile);
@@ -102,9 +100,10 @@ async function submitNewCardForm(evt) {
   const submitButton = newCardPopup.querySelector('.popup__button');
   const initialText = submitButton.textContent;
   submitButton.textContent = 'Сохранение...';
+  submitButton.disabled = true;
   try {
     const newCard = await addNewcardApi(newCardName ,newCardLink);
-    const cardRendered = createCard(newCard, deleteCard, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi);
+    const cardRendered = createCard(newCard, deleteCard, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi, openModal, closeModal );
     list.prepend(cardRendered);
     newCardForm.reset();
     closeModal(newCardPopup);
@@ -118,6 +117,7 @@ async function submitProfileImageForm(evt) {
   const submitButton = profileImagePopup.querySelector('.popup__button');
   const initialText = submitButton.textContent;
   submitButton.textContent = 'Сохранение...';
+  submitButton.disabled = true;
   try {
     const updatedUser = await avatarChangeApi(profileImageInput);
     profileImage.style.backgroundImage = `url(${updatedUser.avatar})`;
@@ -133,6 +133,7 @@ async function editProfile(evt) {
   const submitButton = profilePopupEdit.querySelector('.popup__button');
   const initialText = submitButton.textContent;
   submitButton.textContent = 'Сохранение...';
+  submitButton.disabled = true;
   try {
     const updatedUser = await editProfileApi(profileInputName, profileInputDescription);
     profileName.textContent = updatedUser.name;
@@ -146,7 +147,7 @@ async function editProfile(evt) {
 function renderCards(cards, deleteFunc, currentId, deleteCardApi) {
     list.innerHTML = '';
     cards.forEach(element => {
-        const cardRendered = createCard(element, deleteFunc, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi);
+        const cardRendered = createCard(element, deleteFunc, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi, openModal, closeModal );
         list.append(cardRendered);
     });
 };

@@ -13,67 +13,60 @@ const handleResponse = (res) => {
   return Promise.reject(`Ошибка: ${res.status}`);
 };
 
-export const getUserInfo = () => {
-  return fetch(`${config.baseUrl}/users/me`, {
+const request = (endpoint, options = {}) => {
+  return fetch(`${config.baseUrl}${endpoint}`, {
     headers: config.headers,
+    ...options,
   }).then(handleResponse);
 };
 
-export const getCards = () => {
-  return fetch(`${config.baseUrl}/cards`, {
-    headers: config.headers,
-  }).then(handleResponse);
-};
+export const getUserInfo = () => request('/users/me');
+
+export const getCards = () => request('/cards');
 
 export const editProfileApi = (inputNameProfile, inputJobProfile) => {
-  return fetch(`${config.baseUrl}/users/me`, {
-      method: 'PATCH',
-      headers: config.headers,
-      body: JSON.stringify({
-        name: inputNameProfile.value,
-        about: inputJobProfile.value,
-      }),
-    }).then(handleResponse);
+  return request('/users/me', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      name: inputNameProfile.value,
+      about: inputJobProfile.value,
+    }),
+  });
 };
 
 export const addNewcardApi = (newCardName, newCardLink) => {
-  return fetch(`${config.baseUrl}/cards`, {
+  return request('/cards', {
     method: 'POST',
-    headers: config.headers,
     body: JSON.stringify({
-        name: newCardName.value,
-        link: newCardLink.value,
+      name: newCardName.value,
+      link: newCardLink.value,
     }),
-  }).then(handleResponse);
+  });
 };
 
 export const deleteCardApi = (cardId) => {
-  return fetch(`${config.baseUrl}/cards/${cardId}`, {
+  return request(`/cards/${cardId}`, {
     method: 'DELETE',
-    headers: config.headers,
-  }).then(handleResponse);
+  });
 };
 
 export const likeCardApi = (cardId) => {
-  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+  return request(`/cards/likes/${cardId}`, {
     method: 'PUT',
-    headers: config.headers,
-  }).then(handleResponse);
+  });
 };
 
 export const dislikeCardApi = (cardId) => {
-  return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
+  return request(`/cards/likes/${cardId}`, {
     method: 'DELETE',
-    headers: config.headers,
-  }).then(handleResponse);
+  });
 };
 
 export const avatarChangeApi = (inputAvatarUrl) => {
-  return fetch(`${config.baseUrl}/users/me/avatar`, {
+  return request('/users/me/avatar', {
     method: 'PATCH',
-    headers: config.headers,
     body: JSON.stringify({
       avatar: inputAvatarUrl.value,
     }),
-  }).then(handleResponse);
+  });
 };

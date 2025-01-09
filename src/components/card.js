@@ -1,4 +1,4 @@
-export function createCard(item, deleteCard, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi) {
+export function createCard(item, deleteCard, likeCardApi, openImage, currentId, deleteCardApi, dislikeCardApi, openModal, closeModal) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -10,7 +10,6 @@ export function createCard(item, deleteCard, likeCardApi, openImage, currentId, 
   const popupConfirm = document.querySelector('.popup__type__confirm');
   const buttonConfirm = popupConfirm.querySelector('.popup__button__confirm');
   const cardLikeActive = 'card__like-button_is-active';
-  const popupActive = 'popup_is-opened';
   const itemIdApi = item._id;
 
   cardImage.src = item.link;
@@ -23,14 +22,14 @@ export function createCard(item, deleteCard, likeCardApi, openImage, currentId, 
   }
 
   deleteButton.addEventListener('click', () => {    
-    deleteButtonCard(popupConfirm, popupActive, deleteCard, deleteCardApi, cardElement, itemIdApi, buttonConfirm)
+    deleteButtonCard(popupConfirm, deleteCard, deleteCardApi, cardElement, itemIdApi, buttonConfirm, openModal, closeModal)
   });
 
   const isLiked = item.likes.some((user) => user._id === currentId);
   likeButton.classList.toggle(cardLikeActive, isLiked);
 
   likeButton.addEventListener('click', () => {
-    toggleLike(likeCardApi, dislikeCardApi, itemIdApi, likeButton, likeCount, cardLikeActive)
+    toggleLike(likeCardApi, dislikeCardApi, itemIdApi, likeButton, likeCount, cardLikeActive);
   });
 
   cardImage.addEventListener('click', () => {
@@ -40,17 +39,24 @@ export function createCard(item, deleteCard, likeCardApi, openImage, currentId, 
   return cardElement;
 }
 
-function deleteButtonCard(popupConfirm, popupActive, deleteCard, deleteCardApi, cardElement, itemIdApi, buttonConfirm) {
-  popupConfirm.classList.remove(popupActive);
-  popupConfirm.classList.add(popupActive);
-  const handleConfirmClick = () => {
-    deleteCard(cardElement);
-    deleteCardApi(itemIdApi);
-    popupConfirm.classList.remove(popupActive);
-    buttonConfirm.removeEventListener('click', handleConfirmClick);
+let confirmHandler;
+
+function deleteButtonCard(popupConfirm, deleteCard, deleteCardApi, cardElement, itemIdApi, buttonConfirm, openModal, closeModal) {
+  openModal(popupConfirm);
+  if (confirmHandler) {
+    buttonConfirm.removeEventListener('click', confirmHandler);
+  }
+  confirmHandler = () => {
+    handleConfirmClick(deleteCard, deleteCardApi, closeModal, cardElement, itemIdApi, popupConfirm);
   };
-  buttonConfirm.addEventListener('click', handleConfirmClick);
+  buttonConfirm.addEventListener('click', confirmHandler);
 }
+
+function handleConfirmClick(deleteCard, deleteCardApi, closeModal, cardElement, itemIdApi, popupConfirm) {
+  deleteCard(cardElement);
+  deleteCardApi(itemIdApi);
+  closeModal(popupConfirm);
+};
 
 function toggleLike(likeCardApi, dislikeCardApi, itemIdApi, likeButton, likeCount, cardLikeActive) {
   const isLiked = likeButton.classList.contains(cardLikeActive);

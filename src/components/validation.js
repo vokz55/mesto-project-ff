@@ -52,6 +52,7 @@ export function clearValidation(objectSet, formEdit) {
     
     if(!popupSubmitButton.classList.contains(submitButtonsDis)) {
         popupSubmitButton.classList.add(submitButtonsDis);
+        popupSubmitButton.disabled = true;
     }
 
     popupsInputError.forEach((inputError) => {
